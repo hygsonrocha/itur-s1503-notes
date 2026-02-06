@@ -19,3 +19,9 @@
 
 ```bash
 python notes/001-alpha-angle/examples/example_alpha.py
+
+## License
+
+- Code: MIT License (see `LICENSE`)
+- Documentation (LaTeX/PDF/Markdown under `notes/**/paper/**` and `notes/**/README.md`): CC BY 4.0 (see `LICENSE-docs`)
+
