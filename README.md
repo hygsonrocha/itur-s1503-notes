@@ -19,6 +19,7 @@
 
 ```bash
 python notes/001-alpha-angle/examples/example_alpha.py
+```
 
 ## License
 
