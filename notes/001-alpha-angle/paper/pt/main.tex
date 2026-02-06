@@ -1,7 +1,7 @@
 % !TeX program = lualatex
 % !TeX TXS-program:compile = txs:///lualatex -synctex=1 -interaction=nonstopmode
 
-\documentclass[12pt,a4paper]{report}
+\documentclass[12pt,a4paper]{article}
 
 % ----------------------------
 % 0. Motor / robustez
@@ -162,10 +162,11 @@
 \newcommand{\Lon}{\ensuremath{\mathrm{Long}}}
 \newcommand{\wrapPi}[1]{\operatorname{wrap}_{\pi}\!\left(#1\right)}
 
-\title{Nota 001 --- Cálculo do ângulo \texorpdfstring{$\alpha$}{alpha} ao arco GSO visível\\(referência: ITU-R S.1503-4)}
+\title{Nota 001 -- Cálculo do ângulo \texorpdfstring{$\alpha$}{alpha} ao arco GSO visível\\(referência: ITU-R S.1503-4)}
 \author{Hygson A. P. da Rocha}
 \date{\today}
 
+% Sumário opcional (padrão: sem)
 \newif\ifwithtoc
 \withtocfalse   % <-- sem sumário (padrão)
 % \withtoctrue  % <-- com sumário
@@ -181,12 +182,13 @@
 	\end{abstract}
 	
 	\ifwithtoc
-		\tableofcontents
+	\tableofcontents
+	\medskip
 	\fi
 	
 	% ============================================================
-	\chapter*{Escopo e reprodutibilidade}
-	\addcontentsline{toc}{chapter}{Escopo e reprodutibilidade}
+	\section*{Escopo e reprodutibilidade}
+	\addcontentsline{toc}{section}{Escopo e reprodutibilidade}
 	
 	Este documento foi pensado para acompanhar uma implementação reprodutível:
 	\begin{itemize}\tightlist
@@ -194,16 +196,16 @@
 		\item Notebook de demonstração: \texttt{notebooks/alpha\_angle\_demo.ipynb}
 	\end{itemize}
 	
-	A ideia é manter esta nota \emph{sem} colagem de código-fonte (para evitar divergências e problemas de compilação \LaTeX);
-	o código em \texttt{.py} é a ``fonte de verdade'' e o notebook apenas mostra exemplos.
+	A ideia é manter esta nota \emph{sem} a colagem integral de código-fonte (para reduzir redundância, evitar divergências e simplificar a compilação em \LaTeX).
+	A implementação de referência do algoritmo está no arquivo \texttt{src/alpha\_angle.py}, enquanto o notebook serve como roteiro executável, com exemplos de uso e checagens numéricas.
 	
 	\begin{alertblock}{Compilação}
 		Este \texttt{main.tex} compila com Lua\LaTeX. Ele não depende de \texttt{minted}/Pygments, pois não embute código.
 	\end{alertblock}
 	
 	% ============================================================
-	\chapter*{Definição de \texorpdfstring{$\alpha$}{alpha} e notação}
-	\addcontentsline{toc}{chapter}{Definição de alpha e notação}
+	\section*{Definição de \texorpdfstring{$\alpha$}{alpha} e notação}
+	\addcontentsline{toc}{section}{Definição de alpha e notação}
 	
 	\paragraph{Definição (módulo).}
 	O ângulo \(\alpha\) é a separação angular instantânea, medida no receptor (ES), entre a linha de visada ES\(\rightarrow\)NGSO
@@ -223,7 +225,7 @@
 	\Delta\Lon=\wrapPi{\Lon_{\alpha}-\Lon_{\mathrm{NGSO}}},
 	\]
 	onde \(\Lon_{\mathrm{NGSO}}\) é a longitude geocêntrica do satélite NGSO. O sinal de \(\alpha\) é obtido por um teste geométrico
-	com base na interseção da reta ES\(\rightarrow\)NGSO com o plano equatorial \(XY\) (Capítulo \ref{chap:sinal}).
+	com base na interseção da reta ES\(\rightarrow\)NGSO com o plano equatorial \(XY\) (Seção \ref{sec:sinal}).
 	
 	\paragraph{Notação (vetores).}
 	Sejam:
@@ -251,8 +253,8 @@
 	\]
 	
 	% ============================================================
-	\chapter*{Arco GSO visível a partir da ES}
-	\addcontentsline{toc}{chapter}{Arco GSO visível a partir da ES}
+	\section*{Arco GSO visível a partir da ES}
+	\addcontentsline{toc}{section}{Arco GSO visível a partir da ES}
 	
 	\paragraph{Latitude/longitude geocêntricas da ES.}
 	Seja \(\varphi_E\) a latitude geocêntrica da ES e \(\lambda_E\) sua longitude geocêntrica:
@@ -404,8 +406,8 @@
 	\end{figure}
 	
 	% ============================================================
-	\chapter*{Minimização de \texorpdfstring{$\alpha(\lambda)$}{alpha(lambda)} como maximização}
-	\addcontentsline{toc}{chapter}{Minimizacao de alpha(lambda) como maximizacao}
+	\section*{Minimização de \texorpdfstring{$\alpha(\lambda)$}{alpha(lambda)} como maximização}
+	\addcontentsline{toc}{section}{Minimizacao de alpha(lambda) como maximizacao}
 	
 	Minimizar \(\alpha(\lambda)\) equivale a maximizar o produto escalar:
 	\[
@@ -424,9 +426,9 @@
 	\end{block}
 	
 	% ============================================================
-	\chapter*{Critério de sinal de \texorpdfstring{$\alpha$}{alpha}}
-	\addcontentsline{toc}{chapter}{Criterio de sinal de alpha}
-	\label{chap:sinal}
+	\section*{Critério de sinal de \texorpdfstring{$\alpha$}{alpha}}
+	\addcontentsline{toc}{section}{Criterio de sinal de alpha}
+	\label{sec:sinal}
 	
 	O critério operacional (S.1503, Anexo/Apêndice D, \S D6.4.4.3) pode ser implementado assim:
 	
@@ -447,14 +449,14 @@
 	\end{alertblock}
 	
 	% ============================================================
-	\chapter*{Como usar o código}
-	\addcontentsline{toc}{chapter}{Como usar o codigo}
+	\section*{Como usar o código}
+	\addcontentsline{toc}{section}{Como usar o codigo}
 	
 	\paragraph{Arquivos.}
 	No repositório, mantenha:
 	\begin{itemize}\tightlist
-		\item \texttt{src/alpha\_angle.py} como “fonte de verdade” do algoritmo;
-		\item \texttt{notebooks/alpha\_angle\_demo.ipynb} como demonstração/validação.
+		\item \texttt{src/alpha\_angle.py}: implementação de referência do algoritmo;
+		\item \texttt{notebooks/alpha\_angle\_demo.ipynb}: exemplos de uso, validações e reprodução dos resultados.
 	\end{itemize}
 	
 	\begin{alertblock}{Constantes esféricas}
