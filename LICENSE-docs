@@ -1,10 +1,9 @@
-This repository is dual-licensed:
+Documentation License (CC BY 4.0)
 
-1) Source code (e.g., Python scripts, notebooks, tooling) is licensed under the MIT License.
-   See the file LICENSE.
+Text content (LaTeX/PDF/Markdown) located under:
+- notes/**/paper/**
+- notes/**/README.md
 
-2) Documentation and written content (LaTeX/PDF/Markdown) under:
-   - notes/**/paper/**
-   - notes/**/README.md
-   is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0).
-   See the file LICENSE-docs (or https://creativecommons.org/licenses/by/4.0/).
+is licensed under the Creative Commons Attribution 4.0 International License.
+
+License details: https://creativecommons.org/licenses/by/4.0/
