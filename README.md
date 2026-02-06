@@ -4,8 +4,8 @@
 
 > Série de notas didáticas (LaTeX/PDF + Python) sobre cálculos e implementações associados à Recomendação ITU-R S.1503.
 
-**DOI (Zenodo — concept, sempre aponta para a versão mais recente):** https://doi.org/10.5281/zenodo.18510675  
-**DOI (Zenodo — versão deste release):** https://doi.org/10.5281/zenodo.18510676
+**DOI (Zenodo - concept, sempre aponta para a versão mais recente):** https://doi.org/10.5281/zenodo.18510675  
+**DOI (Zenodo - versão deste release):** https://doi.org/10.5281/zenodo.18510676
 
 ## Conteúdo
 
