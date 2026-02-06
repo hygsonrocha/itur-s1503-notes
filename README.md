@@ -1,4 +1,4 @@
-# ITU-R S.1503 Notes — tutoriais e código reproduzível
+# ITU-R S.1503 Notes - tutoriais e código reproduzível
 
 > Série de notas didáticas (LaTeX/PDF + Python) sobre cálculos e implementações associados à Recomendação ITU-R S.1503.
 
