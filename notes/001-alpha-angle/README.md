@@ -11,9 +11,9 @@ Notas técnicas e tutoriais (LaTeX + Python) para reproduzir e explicar procedim
 ## Estrutura
 
 - `notes/001-alpha-angle/`
-  - `paper/pt/main.tex` — texto da Nota 001 (Português)
-  - `src/alpha_angle.py` — implementação em Python
-  - `src/alpha_angle_demo.ipynb` — notebook de demonstração
+  - `paper/pt/main.tex` - texto da Nota 001 (Português)
+  - `src/alpha_angle.py` - implementação em Python
+  - `src/alpha_angle_demo.ipynb` - notebook de demonstração
 
 > Convenção: `notes/NNN-<topic>/` contém `paper/` (LaTeX) e `src/` (código).
 
