@@ -1,11 +1,17 @@
-# Nota 001 — Cálculo do ângulo α (referência: ITU-R S.1503)
+# ITU-R S.1503 Notes (itur-s1503-notes)
 
-## Escopo
-- Definição do ângulo α no contexto do procedimento
-- Derivação geométrica passo a passo (com figura autoral, se possível)
-- Exemplo numérico mínimo
-- Implementação Python de referência + exemplo executável
+Notas técnicas e tutoriais (LaTeX + Python) para reproduzir e explicar procedimentos da Recomendação ITU-R S.1503.
 
-## Rodar o exemplo
+## Estrutura
+
+- `notes/001-alpha-angle/`
+  - `paper/pt/main.tex` — texto da Nota 001 (Português)
+  - `src/alpha_angle.py` — implementação em Python
+  - `src/alpha_angle_demo.ipynb` — notebook de demonstração
+
+## Como compilar a Nota 001
+
 ```bash
-python examples/example_alpha.py
+cd notes/001-alpha-angle/paper/pt
+lualatex main.tex
+lualatex main.tex
