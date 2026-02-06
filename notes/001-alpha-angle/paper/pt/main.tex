@@ -1,0 +1,466 @@
+% !TeX program = lualatex
+% !TeX TXS-program:compile = txs:///lualatex -synctex=1 -interaction=nonstopmode
+
+\documentclass[12pt,a4paper]{report}
+
+% ----------------------------
+% 0. Motor / robustez
+% ----------------------------
+\usepackage{iftex}
+\ifPDFTeX
+\errmessage{Este modelo deve ser compilado com LuaLaTeX (ou XeLaTeX).}
+\fi
+
+\hfuzz=6pt
+\vfuzz=6pt
+
+% ----------------------------
+% 1. Layout e tipografia
+% ----------------------------
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{microtype}
+\usepackage[brazilian,shorthands=off]{babel}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+
+\setlength{\abovedisplayskip}{0.35em}
+\setlength{\belowdisplayskip}{0.35em}
+\setlength{\abovedisplayshortskip}{0.20em}
+\setlength{\belowdisplayshortskip}{0.20em}
+
+% ----------------------------
+% 2. Fontes (LuaLaTeX)
+% ----------------------------
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX, Scale=MatchLowercase}
+
+\usepackage{mathtools}
+\usepackage{unicode-math}
+
+\IfFontExistsTF{STIX Two Text}{
+	\setmainfont{STIX Two Text}
+}{
+	\IfFontExistsTF{Libertinus Serif}{
+		\setmainfont{Libertinus Serif}
+	}{
+		\setmainfont{Latin Modern Roman}
+	}
+}
+
+\IfFontExistsTF{STIX Two Math}{
+	\setmathfont{STIX Two Math}
+}{
+	\IfFontExistsTF{Libertinus Math}{
+		\setmathfont{Libertinus Math}
+	}{
+		\setmathfont{Latin Modern Math}
+	}
+}
+
+\IfFontExistsTF{Libertinus Sans}{
+	\setsansfont{Libertinus Sans}
+}{
+	\setsansfont{TeX Gyre Heros}
+}
+
+\IfFontExistsTF{Inconsolata}{
+	\setmonofont{Inconsolata}[Scale=MatchLowercase]
+}{
+	\IfFontExistsTF{Latin Modern Mono}{
+		\setmonofont{Latin Modern Mono}[Scale=MatchLowercase]
+	}{
+		\setmonofont{Libertinus Mono}[Scale=MatchLowercase]
+	}
+}
+
+% ----------------------------
+% 3. Cores e caixas
+% ----------------------------
+\usepackage{xcolor}
+\definecolor{AnatelBlue}{HTML}{004B87}
+\definecolor{AnatelLight}{HTML}{F0F5FA}
+
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+\newtcolorbox{block}[1]{
+	breakable, enhanced,
+	colback=AnatelBlue!5,
+	colframe=AnatelBlue!35,
+	boxrule=0.6pt,
+	arc=2pt,
+	left=6pt,right=6pt,top=6pt,bottom=6pt,
+	title=\textbf{#1},
+	coltitle=AnatelBlue,
+	fonttitle=\normalsize,
+}
+
+\newtcolorbox{alertblock}[1]{
+	breakable, enhanced,
+	colback=AnatelLight,
+	colframe=AnatelBlue,
+	boxrule=0.9pt,
+	arc=2pt,
+	left=6pt,right=6pt,top=6pt,bottom=6pt,
+	title=\textbf{#1},
+	colbacktitle=AnatelBlue,
+	coltitle=white,
+	fonttitle=\normalsize,
+}
+
+% ----------------------------
+% 4. Pacotes úteis
+% ----------------------------
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\sisetup{
+	mode = match,
+	propagate-math-font = true,
+	reset-math-version = false,
+	reset-text-family = false,
+	reset-text-series = false,
+	reset-text-shape = false,
+	text-family-to-math = true,
+	text-series-to-math = true,
+	output-decimal-marker = {,},
+	inter-unit-product = \ensuremath{{}\cdot{}}
+}
+
+\newcommand{\tightlist}{%
+	\setlist[itemize]{itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}%
+	\setlist[enumerate]{itemsep=0.25em,topsep=0.25em,parsep=0pt,partopsep=0pt}%
+}
+
+% ----------------------------
+% 5. Figuras (TikZ)
+% ----------------------------
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% ----------------------------
+% 6. Links
+% ----------------------------
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=AnatelBlue,
+	urlcolor=AnatelBlue,
+	citecolor=AnatelBlue,
+	pdftitle={Cálculo do ângulo alfa (ITU-R S.1503-4)},
+	pdfauthor={Hygson A. P. da Rocha}
+}
+\urlstyle{same}
+
+% ----------------------------
+% 7. Macros
+% ----------------------------
+\newcommand{\Rgeo}{\ensuremath{R_{\mathrm{geo}}}}
+\newcommand{\Rearth}{\ensuremath{R_{e}}}
+\newcommand{\Lon}{\ensuremath{\mathrm{Long}}}
+\newcommand{\wrapPi}[1]{\operatorname{wrap}_{\pi}\!\left(#1\right)}
+
+\title{Nota 001 --- Cálculo do ângulo \texorpdfstring{$\alpha$}{alpha} ao arco GSO visível\\(referência: ITU-R S.1503-4)}
+\author{Hygson A. P. da Rocha}
+\date{\today}
+
+\newif\ifwithtoc
+\withtocfalse   % <-- sem sumário (padrão)
+% \withtoctrue  % <-- com sumário
+
+\begin{document}
+	\maketitle
+	
+	\begin{abstract}
+		Esta nota consolida (i) a definição geométrica do ângulo \(\alpha\) da Recomendação ITU-R S.1503-4,
+		(ii) a caracterização do arco GSO visível a partir de uma estação terrena (ES) no modelo esférico,
+		e (iii) uma estratégia prática para obter \(|\alpha|\) e \(\Lon_{\alpha}\) (longitude do ponto do arco que minimiza \(\alpha\)),
+		incluindo o critério de sinal da própria Recomendação.
+	\end{abstract}
+	
+	\ifwithtoc
+		\tableofcontents
+	\fi
+	
+	% ============================================================
+	\chapter*{Escopo e reprodutibilidade}
+	\addcontentsline{toc}{chapter}{Escopo e reprodutibilidade}
+	
+	Este documento foi pensado para acompanhar uma implementação reprodutível:
+	\begin{itemize}\tightlist
+		\item Código Python: \texttt{src/alpha\_angle.py}
+		\item Notebook de demonstração: \texttt{notebooks/alpha\_angle\_demo.ipynb}
+	\end{itemize}
+	
+	A ideia é manter esta nota \emph{sem} colagem de código-fonte (para evitar divergências e problemas de compilação \LaTeX);
+	o código em \texttt{.py} é a ``fonte de verdade'' e o notebook apenas mostra exemplos.
+	
+	\begin{alertblock}{Compilação}
+		Este \texttt{main.tex} compila com Lua\LaTeX. Ele não depende de \texttt{minted}/Pygments, pois não embute código.
+	\end{alertblock}
+	
+	% ============================================================
+	\chapter*{Definição de \texorpdfstring{$\alpha$}{alpha} e notação}
+	\addcontentsline{toc}{chapter}{Definição de alpha e notação}
+	
+	\paragraph{Definição (módulo).}
+	O ângulo \(\alpha\) é a separação angular instantânea, medida no receptor (ES), entre a linha de visada ES\(\rightarrow\)NGSO
+	e a família de linhas de visada ES\(\rightarrow\)ponto no arco GSO visível. Em termos do módulo,
+	\[
+	|\alpha| \;=\; \min_{\lambda\in\mathcal I}\ \arccos\!\big(\mathbf u_N\cdot \mathbf u_G(\lambda)\big)
+	\;=\; \arccos\!\Big(\max_{\lambda\in\mathcal I}\ \mathbf u_N\cdot \mathbf u_G(\lambda)\Big),
+	\]
+	onde \(\mathcal I\) é o intervalo de longitudes do arco GSO \emph{visível} a partir da estação terrena.
+	
+	\paragraph{Definição (sinal) e longitudes associadas.}
+	Conforme a S.1503, \(\alpha\) é \emph{assinado}. Após determinar \(|\alpha|\) e o ponto do arco GSO que o minimiza,
+	defina:
+	\[
+	\Lon_{\alpha}\equiv \Lon_{\mathrm{GSO}}(\lambda^\star)=\lambda^\star,
+	\qquad
+	\Delta\Lon=\wrapPi{\Lon_{\alpha}-\Lon_{\mathrm{NGSO}}},
+	\]
+	onde \(\Lon_{\mathrm{NGSO}}\) é a longitude geocêntrica do satélite NGSO. O sinal de \(\alpha\) é obtido por um teste geométrico
+	com base na interseção da reta ES\(\rightarrow\)NGSO com o plano equatorial \(XY\) (Capítulo \ref{chap:sinal}).
+	
+	\paragraph{Notação (vetores).}
+	Sejam:
+	\begin{itemize}\tightlist
+		\item \(\mathbf r_E\in\mathbb R^3\): posição geocêntrica (ECEF) da estação terrena GSO vítima;
+		\item \(\mathbf r_N\in\mathbb R^3\): posição geocêntrica (ECEF) do satélite NGSO;
+		\item \(\mathbf r_G(\lambda)\in\mathbb R^3\): ponto no anel GEO (círculo equatorial de raio \(\Rgeo\)) na longitude geocêntrica \(\lambda\):
+		\[
+		\mathbf{r}_G(\lambda) \;=\; \Rgeo
+		\begin{bmatrix}\cos\lambda\\ \sin\lambda\\ 0\end{bmatrix}.
+		\]
+	\end{itemize}
+	
+	Defina os vetores unitários de visada:
+	\[
+	\mathbf u_N=\frac{\mathbf r_N-\mathbf r_E}{\|\mathbf r_N-\mathbf r_E\|},
+	\qquad
+	\mathbf u_G(\lambda)=\frac{\mathbf r_G(\lambda)-\mathbf r_E}{\|\mathbf r_G(\lambda)-\mathbf r_E\|}.
+	\]
+	Para uma longitude \(\lambda\) no anel GEO, a separação é
+	\[
+	\alpha(\lambda)=\arccos\!\big(\mathbf u_N\cdot \mathbf u_G(\lambda)\big),
+	\qquad
+	|\alpha|=\min_{\lambda\in\mathcal I}\alpha(\lambda).
+	\]
+	
+	% ============================================================
+	\chapter*{Arco GSO visível a partir da ES}
+	\addcontentsline{toc}{chapter}{Arco GSO visível a partir da ES}
+	
+	\paragraph{Latitude/longitude geocêntricas da ES.}
+	Seja \(\varphi_E\) a latitude geocêntrica da ES e \(\lambda_E\) sua longitude geocêntrica:
+	\[
+	\varphi_E=\arcsin\!\left(\frac{z_E}{\|\mathbf r_E\|}\right),
+	\qquad
+	\lambda_E=\operatorname{atan2}(y_E,x_E).
+	\]
+	
+	\paragraph{Ideia física (horizonte local).}
+	No modelo esférico, a direção radial \(\mathbf r_E\) é a normal do plano tangente (horizonte local) na estação.
+	Um ponto \(\mathbf r\) no espaço está \emph{acima do horizonte} (elevação \(\ge 0\)) se o vetor linha-de-visada
+	\((\mathbf r-\mathbf r_E)\) forma ângulo agudo (ou reto) com a normal \(\mathbf r_E\), i.e.:
+	\[
+	(\mathbf r-\mathbf r_E)\cdot \mathbf r_E \;\ge\; 0
+	\quad\Longleftrightarrow\quad
+	\mathbf r\cdot \mathbf r_E \;\ge\; \|\mathbf r_E\|^2.
+	\]
+	
+	\paragraph{Condição de visibilidade no anel GEO.}
+	Para um ponto no anel GEO, \(\mathbf r=\mathbf r_G(\lambda)\), a visibilidade equivale a:
+	\[
+	\mathbf r_G(\lambda)\cdot \mathbf r_E \;\ge\; \|\mathbf r_E\|^2.
+	\]
+	Escrevendo \(\mathbf r_E\) em termos de \(\varphi_E,\lambda_E\):
+	\[
+	\mathbf r_E= \|\mathbf r_E\|
+	\begin{bmatrix}
+		\cos\varphi_E\cos\lambda_E\\
+		\cos\varphi_E\sin\lambda_E\\
+		\sin\varphi_E
+	\end{bmatrix},
+	\quad\text{e}\quad
+	\mathbf r_G(\lambda)=\Rgeo
+	\begin{bmatrix}
+		\cos\lambda\\
+		\sin\lambda\\
+		0
+	\end{bmatrix},
+	\]
+	obtém-se:
+	\[
+	\mathbf r_G(\lambda)\cdot \mathbf r_E
+	=
+	\Rgeo\|\mathbf r_E\|\cos\varphi_E\cos(\lambda-\lambda_E).
+	\]
+	Portanto,
+	\[
+	\cos(\lambda-\lambda_E)\;\ge\;\frac{\|\mathbf r_E\|}{\Rgeo\cos\varphi_E}.
+	\]
+	
+	\paragraph{Semi-extensão \texorpdfstring{$\theta_{\max}$}{theta\_max} e intervalo \(\mathcal I\).}
+	No uso usual do modelo esférico, toma-se \(\|\mathbf r_E\|\approx \Rearth\). Assim:
+	\[
+	\cos(\lambda-\lambda_E)\;\ge\;\frac{\Rearth}{\Rgeo\cos\varphi_E}.
+	\]
+	A desigualdade define um intervalo simétrico em torno de \(\lambda_E\):
+	\[
+	|\lambda-\lambda_E|\;\le\;\theta_{\max},
+	\qquad
+	\theta_{\max}=\arccos\!\left(\frac{\Rearth}{\Rgeo\cos\varphi_E}\right),
+	\]
+	desde que \(\cos\varphi_E>\Rearth/\Rgeo\).
+	
+	\paragraph{Caso sem arco visível.}
+	Se \(\cos\varphi_E\le \Rearth/\Rgeo\), não existe \(\lambda\) satisfazendo a condição de visibilidade.
+	Nesse caso, adota-se a convenção operacional:
+	\[
+	|\alpha|=\pi.
+	\]
+	
+	\begin{figure}[ht]
+		\centering
+		% (a) Vista superior no plano equatorial XY
+		\begin{minipage}[t]{0.54\textwidth}
+			\centering
+			\begin{tikzpicture}[scale=1.05, line cap=round, line join=round]
+				\def\ReD{1.35}
+				\def\RgeoD{3.10}
+				\def\rhoD{0.95}
+				\def\thmaxD{55}
+				\def\lamED{0}
+				
+				\pgfmathsetmacro{\RgeoLong}{\RgeoD*1.08}
+				\pgfmathsetmacro{\RgeoShort}{\RgeoD*1.03}
+				
+				\draw[thick] (0,0) circle (\ReD);
+				\draw[thick] (0,0) circle (\RgeoD);
+				
+				\fill (0,0) circle (1.2pt) node[below left] {$O$};
+				
+				\draw[->,thick] (0,0) -- (\lamED:\RgeoLong) node[above right] {$\lambda_E$};
+				
+				\draw[thick] (0,0) -- (\lamED+\thmaxD:\RgeoShort);
+				\draw[thick] (0,0) -- (\lamED-\thmaxD:\RgeoShort);
+				
+				\draw[line width=2.2pt] (\lamED-\thmaxD:\RgeoD) arc (\lamED-\thmaxD:\lamED+\thmaxD:\RgeoD);
+				
+				\fill (\lamED+\thmaxD:\RgeoD) circle(1.2pt)
+				node[above] {$\lambda_E+\theta_{\max}$};
+				\fill (\lamED-\thmaxD:\RgeoD) circle(1.2pt)
+				node[below] {$\lambda_E-\theta_{\max}$};
+				
+				\fill (\lamED:\rhoD) circle (1.2pt) node[below] {$E_\perp$};
+				\draw[dashed] (0,0) -- (\lamED:\rhoD)
+				node[pos=0.65, below=10pt, xshift=6pt] {\small $\rho_E=\Rearth\cos\varphi_E$};
+				
+				\draw[->] (\lamED:0.80) arc (\lamED:\lamED+\thmaxD:0.80);
+				\node at (\lamED+\thmaxD/2:1.05) {\small $\theta_{\max}$};
+				
+				\node at (0,-\RgeoD-0.55) {\small (a) Plano equatorial \(XY\): arco visível no anel GEO};
+			\end{tikzpicture}
+		\end{minipage}
+		\hfill
+		% (b) Horizonte local
+		\begin{minipage}[t]{0.43\textwidth}
+			\centering
+			\begin{tikzpicture}[scale=1.05, line cap=round, line join=round]
+				\def\ReD{1.35}
+				\def\phiD{35}
+				
+				\coordinate (O) at (0,0);
+				\coordinate (E) at ({\ReD*cos(\phiD)},{\ReD*sin(\phiD)});
+				
+				\draw[thick] (O) circle (\ReD);
+				\fill (O) circle (1.2pt) node[below left] {$O$};
+				
+				\draw[thick,->] (O) -- (E) node[midway,above left] {$\mathbf r_E$};
+				\fill (E) circle (1.2pt) node[above right] {$E$};
+				
+				\pgfmathsetmacro{\tx}{-sin(\phiD)}
+				\pgfmathsetmacro{\ty}{cos(\phiD)}
+				
+				\coordinate (T1) at ($(E)+({0.95*\tx},{0.95*\ty})$);
+				\coordinate (T2) at ($(E)-({0.95*\tx},{0.95*\ty})$);
+				\draw[thick] (T1) -- (T2);
+				\node[above] at ($(E)+(-0.5,0.65)$) {\small plano tangente (horizonte)};
+				
+				\coordinate (G) at ($(E)+(1.65,0.55)$);
+				\fill (G) circle (1.2pt) node[above right] {$\mathbf r_G(\lambda)$};
+				\draw[->] (E) -- (G) node[midway,above] {$\mathbf r_G-\mathbf r_E$};
+				
+				\node at (0,-\ReD-0.55) {\small (b) Visibilidade: \((\mathbf r_G-\mathbf r_E)\cdot\mathbf r_E \ge 0\)};
+			\end{tikzpicture}
+		\end{minipage}
+		
+		\caption{Interpretação geométrica do arco GEO visível a partir da ES no modelo esférico.}
+		\label{fig:geo-visible-arc}
+	\end{figure}
+	
+	% ============================================================
+	\chapter*{Minimização de \texorpdfstring{$\alpha(\lambda)$}{alpha(lambda)} como maximização}
+	\addcontentsline{toc}{chapter}{Minimizacao de alpha(lambda) como maximizacao}
+	
+	Minimizar \(\alpha(\lambda)\) equivale a maximizar o produto escalar:
+	\[
+	f(\lambda)=\mathbf u_N\cdot \mathbf u_G(\lambda)
+	=
+	\frac{(\mathbf r_N-\mathbf r_E)\cdot(\mathbf r_G(\lambda)-\mathbf r_E)}
+	{\|\mathbf r_N-\mathbf r_E\|\,\|\mathbf r_G(\lambda)-\mathbf r_E\|}.
+	\]
+	A implementação em \texttt{src/alpha\_angle.py} usa uma formulação analítica no frame rotacionado por \(-\lambda_E\),
+	gerando um conjunto finito de candidatos (bordas do arco, ponto central e raízes de uma quartica associada à condição de estacionariedade),
+	seguido de desempate por \(\Delta\Lon\) quando houver empates numéricos.
+	
+	\begin{block}{Regra de desempate por \(\Delta\Lon\)}
+		Se existirem múltiplos \(\lambda^\star\) que produzam o mesmo \(|\alpha|\) (ou indistinguíveis dentro de uma tolerância numérica),
+		escolha aquele que minimiza \(|\Delta\Lon|\). Persistindo empate, escolha \(\Delta\Lon>0\).
+	\end{block}
+	
+	% ============================================================
+	\chapter*{Critério de sinal de \texorpdfstring{$\alpha$}{alpha}}
+	\addcontentsline{toc}{chapter}{Criterio de sinal de alpha}
+	\label{chap:sinal}
+	
+	O critério operacional (S.1503, Anexo/Apêndice D, \S D6.4.4.3) pode ser implementado assim:
+	
+	\begin{enumerate}\tightlist
+		\item Considere a reta \(P(t)=\mathbf r_E+t(\mathbf r_N-\mathbf r_E)\).
+		\item Interseção com \(z=0\): se \((r_{N,z}-r_{E,z})\neq 0\), então \(t_0=-r_{E,z}/(r_{N,z}-r_{E,z})\).
+		\item Se \(t_0<0\), a interseção está ``atrás'' da ES; trate como \(\rho=\infty\).
+		\item Caso contrário, compute \(P(t_0)\) e \(\rho=\sqrt{P_x(t_0)^2+P_y(t_0)^2}\).
+		\item Então:
+		\begin{itemize}\tightlist
+			\item se \(r_{E,z}>0\) (hemisfério norte), \(\alpha>0\) se \(\rho<\Rgeo\), caso contrário \(\alpha<0\);
+			\item se \(r_{E,z}<0\) (hemisfério sul), \(\alpha>0\) se \(\rho>\Rgeo\), caso contrário \(\alpha<0\).
+		\end{itemize}
+	\end{enumerate}
+	
+	\begin{alertblock}{Observação (casos degenerados)}
+		A rotina de referência inclui tratamentos numéricos para casos degenerados (por exemplo, ES no equador e/ou visada quase paralela ao plano \(XY\)).
+	\end{alertblock}
+	
+	% ============================================================
+	\chapter*{Como usar o código}
+	\addcontentsline{toc}{chapter}{Como usar o codigo}
+	
+	\paragraph{Arquivos.}
+	No repositório, mantenha:
+	\begin{itemize}\tightlist
+		\item \texttt{src/alpha\_angle.py} como “fonte de verdade” do algoritmo;
+		\item \texttt{notebooks/alpha\_angle\_demo.ipynb} como demonstração/validação.
+	\end{itemize}
+	
+	\begin{alertblock}{Constantes esféricas}
+		Defina e documente explicitamente os valores de \(\Rearth\) e \(\Rgeo\) adotados na implementação.
+		Na prática, ambos aparecem na literatura/implementações: \(\Rearth=\SI{6371}{km}\) ou \(\SI{6378.145}{km}\);
+		\(\Rgeo\approx \SI{42164}{km}\).
+	\end{alertblock}
+	
+\end{document}

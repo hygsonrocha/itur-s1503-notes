@@ -1,0 +1,18 @@
+
+### 3.2 `.zenodo.json` (metadados que o Zenodo usa)
+Crie o arquivo `.zenodo.json` na raiz (obs.: o ponto antes do nome faz parte):
+
+```json
+{
+  "title": "ITU-R S.1503 Notes — tutoriais e código reproduzível",
+  "upload_type": "software",
+  "description": "Coleção de notas didáticas (LaTeX/PDF) e código Python com implementações reproduzíveis de cálculos associados à ITU-R S.1503. Inclui a Nota 001 (ângulo α).",
+  "creators": [
+    {
+      "name": "Rocha, Hygson Assef Pereira da",
+      "affiliation": "Anatel (Brazil) — personal/technical notes"
+    }
+  ],
+  "keywords": ["ITU-R", "S.1503", "EPFD", "NGSO", "satellite communications", "worst-case geometry"],
+  "access_right": "open"
+}

@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it."
+title: "ITU-R S.1503 Notes — Tutorials and reproducible code"
+type: software
+authors:
+  - family-names: "Rocha"
+    given-names: "Hygson Assef Pereira da"
+keywords:
+  - ITU-R
+  - S.1503
+  - EPFD
+  - NGSO
+repository-code: "https://github.com/hygsonrocha/itur-s1503-notes"
+license: "MIT"
+# Depois que o Zenodo gerar o DOI do release, você pode adicionar:
+# doi: 10.5281/zenodo.XXXXXXX
