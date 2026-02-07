@@ -307,24 +307,23 @@
 	\]
 	
 	\paragraph{Semi-extensão \texorpdfstring{$\theta_{\max}$}{theta\_max} e intervalo \(\mathcal I\).}
+	A condição de visibilidade acima define as \emph{longitudes do anel GEO que estão acima do horizonte} da ES.
 	No uso usual do modelo esférico, toma-se \(\|\mathbf r_E\|\approx \Rearth\). Assim:
 	\[
 	\cos(\lambda-\lambda_E)\;\ge\;\frac{\Rearth}{\Rgeo\cos\varphi_E}.
 	\]
-	A desigualdade define um intervalo simétrico em torno de \(\lambda_E\):
+	Essa desigualdade define um intervalo simétrico em torno de \(\lambda_E\):
 	\[
-	|\lambda-\lambda_E|\;\le\;\theta_{\max},
+	\mathcal I=\bigl[\lambda_E-\theta_{\max},\,\lambda_E+\theta_{\max}\bigr],
 	\qquad
 	\theta_{\max}=\arccos\!\left(\frac{\Rearth}{\Rgeo\cos\varphi_E}\right),
 	\]
-	desde que \(\cos\varphi_E>\Rearth/\Rgeo\).
+	desde que \(\cos\varphi_E>\Rearth/\Rgeo\). A minimização de \(|\alpha|\) (equivalentemente, a maximização de \(f(\lambda)\))
+	é realizada \emph{somente} para \(\lambda\in\mathcal I\); fora desse intervalo, os pontos do anel GEO não são visíveis a partir da ES.
 	
 	\paragraph{Caso sem arco visível.}
-	Se \(\cos\varphi_E\le \Rearth/\Rgeo\), não existe \(\lambda\) satisfazendo a condição de visibilidade.
-	Nesse caso, adota-se a convenção operacional:
-	\[
-	|\alpha|=\pi.
-	\]
+	Se \(\cos\varphi_E\le \Rearth/\Rgeo\), não há solução para a condição de visibilidade (nenhum ponto do anel GEO está acima do horizonte da ES).
+	Nesse caso, adota-se a convenção operacional \(|\alpha|=\pi\).
 	
 	\begin{figure}[ht]
 		\centering
